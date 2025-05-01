@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - RBIM RENOVÁVEIS</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <!-- Chart.js para gráficos dinâmicos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <!-- Espaço reservado para o logo da RBIM -->
+                <img src="../images/logo-placeholder.png" alt="RBIM RENOVÁVEIS Logo" id="logo">
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="sobre.html">Sobre</a></li>
+                    <li><a href="dashboard.html" class="active">Dashboard</a></li>
+                </ul>
+            </nav>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-main">
+        <div class="dashboard-header">
+            <div class="container">
+                <h1>Dashboard de Inteligência Climática</h1>
+                <p>Monitore em tempo real os dados climáticos relevantes para seu projeto de energia renovável</p>
+                <div class="location-selector">
+                    <label for="location">Localização:</label>
+                    <select id="location">
+                        <option value="fortaleza">Fortaleza, CE</option>
+                        <option value="saopaulo">São Paulo, SP</option>
+                        <option value="riodejaneiro">Rio de Janeiro, RJ</option>
+                        <option value="brasilia">Brasília, DF</option>
+                        <option value="salvador">Salvador, BA</option>
+                    </select>
+                    <!-- Comentário para integração futura com API OpenWeather:
+                    Aqui você pode adicionar um campo de busca para permitir que o usuário
+                    pesquise qualquer cidade e obtenha dados climáticos em tempo real usando
+                    a API OpenWeather. Utilize o endpoint /weather com o parâmetro q=cidade,país
+                    e appid=SUA_CHAVE_API -->
+                    <button id="update-data" class="btn secondary">Atualizar Dados</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-content">
+            <div class="container">
+                <div class="dashboard-grid">
+                    <!-- Widgets de dados climáticos -->
+                    <div class="widget current-weather">
+                        <div class="widget-header">
+                            <h3>Condições Atuais</h3>
+                            <span class="last-update">Última atualização: <span id="last-update-time">--:--</span></span>
+                        </div>
+                        <div class="widget-content">
+                            <div class="weather-main">
+                                <div class="temperature">
+                                    <span id="current-temp">--</span>°C
+                                </div>
+                                <div class="weather-icon">
+                                    <!-- Ícone será inserido via JavaScript -->
+                                </div>
+                                <div class="weather-description">
+                                    <span id="weather-desc">--</span>
+                                </div>
+                            </div>
+                            <div class="weather-details">
+                                <div class="weather-detail">
+                                    <span class="detail-label">Sensação</span>
+                                    <span class="detail-value"><span id="feels-like">--</span>°C</span>
+                                </div>
+                                <div class="weather-detail">
+                                    <span class="detail-label">Umidade</span>
+                                    <span class="detail-value"><span id="humidity">--</span>%</span>
+                                </div>
+                                <div class="weather-detail">
+                                    <span class="detail-label">Pressão</span>
+                                    <span class="detail-value"><span id="pressure">--</span> hPa</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Widget de Velocidade do Vento -->
+                    <div class="widget wind-data">
+                        <div class="widget-header">
+                            <h3>Velocidade do Vento</h3>
+                        </div>
+                        <div class="widget-content">
+                            <div class="wind-speed">
+                                <div class="current-wind">
+                                    <span id="wind-speed">--</span>
+                                    <span class="unit">m/s</span>
+                                </div>
+                                <div class="wind-direction">
+                                    Direção: <span id="wind-direction">--</span>°
+                                </div>
+                            </div>
+                            <div class="wind-chart-container">
+                                <canvas id="windChart"></canvas>
+                            </div>
+                            <!-- Comentário para integração futura com API OpenWeather:
+                            Para obter dados de vento em tempo real, utilize o endpoint /weather
+                            e acesse os campos wind.speed e wind.deg na resposta da API.
+                            Para dados históricos, considere o endpoint /onecall com parâmetros
+                            de data para criar gráficos de tendência. -->
+                        </div>
+                    </div>
+
+                    <!-- Widget de Radiação Solar -->
+                    <div class="widget solar-radiation">
+                        <div class="widget-header">
+                            <h3>Radiação Solar</h3>
+                        </div>
+                        <div class="widget-content">
+                            <div class="radiation-level">
+                                <span id="radiation-value">--</span>
+                                <span class="unit">W/m²</span>
+                            </div>
+                            <div class="radiation-chart-container">
+                                <canvas id="radiationChart"></canvas>
+                            </div>
+                            <!-- Comentário para integração futura com API OpenWeather:
+                            Para dados de radiação solar, você pode utilizar o endpoint /onecall
+                            da API OpenWeather e acessar o campo current.uvi para o índice UV atual,
+                            que pode ser usado como proxy para estimar a radiação solar.
+                            Para dados mais precisos de radiação, considere APIs especializadas
+                            como a NREL Solar Resource API. -->
+                        </div>
+                    </div>
+
+                    <!-- Widget de Índice UV -->
+                    <div class="widget uv-index">
+                        <div class="widget-header">
+                            <h3>Índice UV</h3>
+                        </div>
+                        <div class="widget-content">
+                            <div class="uv-level">
+                                <span id="uv-value">--</span>
+                                <div class="uv-category" id="uv-category">--</div>
+                            </div>
+                            <div class="uv-chart-container">
+                                <canvas id="uvChart"></canvas>
+                            </div>
+                            <div class="uv-forecast">
+                                <h4>Previsão para hoje</h4>
+                                <div class="uv-forecast-chart">
+                                    <canvas id="uvForecastChart"></canvas>
+                                </div>
+                            </div>
+                            <!-- Comentário para integração futura com API OpenWeather:
+                            O índice UV pode ser obtido diretamente do endpoint /onecall
+                            da API OpenWeather no campo current.uvi. Para previsões horárias,
+                            utilize os dados do campo hourly[].uvi no mesmo endpoint. -->
+                        </div>
+                    </div>
+
+                    <!-- Widget de Simulação de Viabilidade -->
+                    <div class="widget viability-simulation">
+                        <div class="widget-header">
+                            <h3>Simulação de Viabilidade</h3>
+                        </div>
+                        <div class="widget-content">
+                            <div class="simulation-form">
+                                <div class="form-group">
+                                    <label for="energy-type">Tipo de Energia:</label>
+                                    <select id="energy-type">
+                                        <option value="solar">Solar</option>
+                                        <option value="wind">Eólica</option>
+                                        <option value="hybrid">Híbrida</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="capacity">Capacidade Instalada (kW):</label>
+                                    <input type="number" id="capacity" min="1" value="100">
+                                </div>
+                                <div class="form-group">
+                                    <label for="investment">Investimento Inicial (R$):</label>
+                                    <input type="number" id="investment" min="1000" value="500000">
+                                </div>
+                                <button id="simulate-btn" class="btn primary">Simular</button>
+                            </div>
+                            <div class="simulation-results">
+                                <h4>Resultados da Simulação</h4>
+                                <div class="result-item">
+                                    <span class="result-label">Produção Anual Estimada:</span>
+                                    <span class="result-value" id="annual-production">--</span> kWh
+                                </div>
+                                <div class="result-item">
+                                    <span class="result-label">Economia Anual:</span>
+                                    <span class="result-value" id="annual-savings">--</span> R$
+                                </div>
+                                <div class="result-item">
+                                    <span class="result-label">Tempo de Retorno:</span>
+                                    <span class="result-value" id="payback-time">--</span> anos
+                                </div>
+                                <div class="result-item">
+                                    <span class="result-label">Redução de CO₂:</span>
+                                    <span class="result-value" id="co2-reduction">--</span> ton/ano
+                                </div>
+                            </div>
+                            <div class="viability-chart-container">
+                                <canvas id="viabilityChart"></canvas>
+                            </div>
+                            <!-- Comentário para integração futura:
+                            Esta simulação pode ser aprimorada utilizando dados históricos
+                            da API OpenWeather combinados com modelos de eficiência de painéis
+                            solares e turbinas eólicas. Considere implementar cálculos baseados
+                            em médias de radiação solar e velocidade do vento para diferentes
+                            períodos do ano. -->
+                        </div>
+                    </div>
+
+                    <!-- Widget de Comparação de Tecnologias -->
+                    <div class="widget technology-comparison">
+                        <div class="widget-header">
+                            <h3>Comparação de Tecnologias</h3>
+                        </div>
+                        <div class="widget-content">
+                            <div class="comparison-chart-container">
+                                <canvas id="comparisonChart"></canvas>
+                            </div>
+                            <div class="comparison-legend">
+                                <div class="legend-item">
+                                    <span class="legend-color solar"></span>
+                                    <span class="legend-label">Solar Fotovoltaica</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color wind"></span>
+                                    <span class="legend-label">Eólica</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color hybrid"></span>
+                                    <span class="legend-label">Sistema Híbrido</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <!-- Espaço reservado para o logo da RBIM no rodapé -->
+                    <img src="../images/logo-placeholder.png" alt="RBIM RENOVÁVEIS Logo" class="footer-logo-img">
+                </div>
+                <div class="footer-links">
+                    <h4>Links Rápidos</h4>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="sobre.html">Sobre</a></li>
+                        <li><a href="dashboard.html">Dashboard</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contato</h4>
+                    <p>contato@rbimrenovaveis.com.br</p>
+                    <p>+55 (00) 0000-0000</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 RBIM RENOVÁVEIS. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/dashboard.js"></script>
+</body>
+</html>

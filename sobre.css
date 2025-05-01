@@ -1,0 +1,91 @@
+/* Estilos específicos para a página Sobre */
+.about-hero {
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../images/about-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    color: var(--white);
+    padding: 80px 0;
+    text-align: center;
+}
+
+.about-hero h1 {
+    font-size: 2.8rem;
+    margin-bottom: 15px;
+}
+
+.about-hero h2 {
+    font-size: 1.6rem;
+    font-weight: 400;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.about-content {
+    padding: 60px 0;
+    background-color: var(--white);
+}
+
+.mission-vision {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+.mission, .vision {
+    background-color: var(--light-color);
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+.mission h3, .vision h3 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+}
+
+.about-text {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.about-text h3 {
+    color: var(--primary-color);
+    margin: 30px 0 15px;
+    font-size: 1.5rem;
+}
+
+.about-text p {
+    margin-bottom: 20px;
+    line-height: 1.8;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .about-hero {
+        padding: 60px 0;
+    }
+    
+    .about-hero h1 {
+        font-size: 2.2rem;
+    }
+    
+    .about-hero h2 {
+        font-size: 1.3rem;
+    }
+    
+    .mission-vision {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .about-hero h1 {
+        font-size: 1.8rem;
+    }
+    
+    .about-hero h2 {
+        font-size: 1.1rem;
+    }
+}
